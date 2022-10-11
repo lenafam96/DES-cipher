@@ -347,10 +347,8 @@ print("Decryption")
 rkb_rev = rkb[::-1]
 rk_rev = rk[::-1]
 
-print(rkb)
-print(rkb_rev)
 
-# text = bin2hex(encrypt(cipher_text, rkb_rev, rk_rev))
-# print("Bản rõ : ",text)
+text = bin2hex(encrypt(cipher_text, rkb_rev, rk_rev))
+print("Bản rõ : ",text)
 
 # This code is contributed by Aditya Jain

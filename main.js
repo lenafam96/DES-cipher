@@ -22,7 +22,7 @@ function unicode2bin(s) {
     }
     list.push(block);
   }
-  console.log(list);
+  // console.log(list);
   return list;
 }
 
@@ -35,7 +35,7 @@ function bin2unicode(s) {
   for (const item of list) {
     str+=String.fromCharCode(parseInt(item,2));
   }
-  console.log(str);
+  // console.log(str);
 }
 
 function hex2bin(s) {
@@ -230,7 +230,7 @@ const key_comp = [
 ];
 
 function encryptString(pt, rkb, rk) {
-  console.log(rkb);
+  // console.log(rkb);
   pt = permute(pt, initial_perm, 64);
 
   let left = pt.slice(0,32);
@@ -243,11 +243,11 @@ function encryptString(pt, rkb, rk) {
 
     let xor_x = xor(right_expanded, rkb[i]);
 
-    // console.log(`Loop ${i+1}:`)
-    // console.log(`K${i+1} = ${rkb[i]}`);
-    // console.log(`L${i+1} = R${i} = ${right_old}`);
-    // console.log(`E(R${i}) = ${right_expanded}`);
-    // console.log(`K${i+1} XOR E(R${i}) = ${xor_x}`);
+    console.log(`Loop ${i+1}:`)
+    console.log(`K${i+1} = ${rkb[i]}`);
+    console.log(`L${i+1} = R${i} = ${right_old}`);
+    console.log(`E(R${i}) = ${right_expanded}`);
+    console.log(`K${i+1} XOR E(R${i}) = ${xor_x}`);
 
     let sbox_str = "";
     for (let j = 0; j < 8; j++) {
@@ -262,17 +262,17 @@ function encryptString(pt, rkb, rk) {
       );
       let val = sbox[j][row][col];
       sbox_str += dec2bin(val);
-      // console.log(`S${j+1}[${row}][${col}] = ${val} = ${dec2bin(val)}}`);
+      console.log(`S${j+1}[${row}][${col}] = ${val} = ${dec2bin(val)}}`);
     }
 
-    // console.log(`S-box: ${sbox_str}`);
+    console.log(`S-box: ${sbox_str}`);
     sbox_str = permute(sbox_str, per, 32);
 
-    // console.log(`Hoan vi P S-box = ${sbox_str}`);
+    console.log(`Hoan vi P S-box = ${sbox_str}`);
     let result = xor(left, sbox_str);
     left = result;
 
-    // console.log(`R${i+1} = L${i} XOR f(R${i},K${i+1}) = ${result}`);
+    console.log(`R${i+1} = L${i} XOR f(R${i},K${i+1}) = ${result}`);
 
     if (i !== 15) {
       let tmp = left;
@@ -282,21 +282,21 @@ function encryptString(pt, rkb, rk) {
   }
 
   let combine = left + right;
-  // console.log(`R${16}L${16} = ${combine}`);
+  console.log(`R${16}L${16} = ${combine}`);
   let cipher_text = permute(combine, final_perm, 64);
-  // console.log(`Hoan vi IP-1 = ${cipher_text}`);
+  console.log(`Hoan vi IP-1 = ${cipher_text}`);
   return cipher_text;
 }
 
 function encryptBlock(block,key){
   key = permute(key,keyp,56);
   
-  // console.log(`Hoan vi 56b PC-1: ${key}`);
+  console.log(`Hoan vi 56b PC-1: ${key}`);
   
   let left = key.slice(0,28);
   let right = key.slice(-28);
-  // console.log(`C0: ${left}`);
-  // console.log(`D0: ${right}`);
+  console.log(`C0: ${left}`);
+  console.log(`D0: ${right}`);
   
   let rkb = []
   let rk = []
@@ -312,13 +312,13 @@ function encryptBlock(block,key){
     rkb.push(round_key);
     rk.push(bin2hex(round_key));
 
-    // console.log(`C${i+1}: ${left}`);
-    // console.log(`D${i+1}: ${right}`);
+    console.log(`C${i+1}: ${left}`);
+    console.log(`D${i+1}: ${right}`);
   }
-  // console.log("Khoa K1->16:");
-  // for (let i = 0; i < 16; i++) {
-  //   console.log(`K${i+1} = ${rkb[i]}`);
-  // }
+  console.log("Khoa K1->16:");
+  for (let i = 0; i < 16; i++) {
+    console.log(`K${i+1} = ${rkb[i]}`);
+  }
 
   return encryptString(block,rkb,rk);
 }
@@ -326,12 +326,12 @@ function encryptBlock(block,key){
 function decryptBlock(block,key){
   key = permute(key,keyp,56);
   
-  // console.log(`Hoan vi 56b PC-1: ${key}`);
+  console.log(`Hoan vi 56b PC-1: ${key}`);
   
   let left = key.slice(0,28);
   let right = key.slice(-28);
-  // console.log(`C0: ${left}`);
-  // console.log(`D0: ${right}`);
+  console.log(`C0: ${left}`);
+  console.log(`D0: ${right}`);
   
   let rkb = []
   let rk = []
@@ -347,14 +347,15 @@ function decryptBlock(block,key){
     rkb.push(round_key);
     rk.push(bin2hex(round_key));
 
-    // console.log(`C${i+1}: ${left}`);
-    // console.log(`D${i+1}: ${right}`);
+    console.log(`C${i+1}: ${left}`);
+    console.log(`D${i+1}: ${right}`);
   }
-  // console.log("Khoa K1->16:");
-  // for (let i = 0; i < 16; i++) {
-  //   console.log(`K${i+1} = ${rkb[i]}`);
-  // }
+  console.log("Khoa K1->16:");
+  for (let i = 0; i < 16; i++) {
+    console.log(`K${i+1} = ${rkb[i]}`);
+  }
 
+  let rkb_rev = [...rkb.reverse()];
   return encryptString(block,rkb.reverse(),rk.reverse());
 }
 
@@ -375,21 +376,21 @@ function encrypt() {
 
   // if (plain_text.length === 0) return;
 
-  let pt = unicode2bin(plain_text);
+  let pt = hex2bin(plain_text);
   key = hex2bin(key);
 
-  for (const item of pt) {
-    // result+=bin2hex(encryptBlock(item,key));
-    result+=(encryptBlock(item,key));
-  }
+  // for (const item of pt) {
+  //   result+=bin2hex(encryptBlock(item,key));
+  //   // result+=(encryptBlock(item,key));
+  // }
 
 
-  // console.log(`Ban ro qua phep IP(64b): ${permute(pt,initial_perm,64)}`);
-  // console.log(`L0: ${permute(pt,initial_perm,64).slice(0,32)}`);
-  // console.log(`R0: ${permute(pt,initial_perm,64).slice(-32)}`);
+  console.log(`Ban ro qua phep IP(64b): ${permute(pt,initial_perm,64)}`);
+  console.log(`L0: ${permute(pt,initial_perm,64).slice(0,32)}`);
+  console.log(`R0: ${permute(pt,initial_perm,64).slice(-32)}`);
 
-  // console.log(encryptBlock(pt,key));
-  // result = bin2hex(encryptBlock(pt,key));
+  console.log(encryptBlock(pt,key));
+  result = bin2hex(encryptBlock(pt,key));
 
   cipher_text.innerHTML = result;
   //   console.log(key_array, array);
@@ -421,20 +422,25 @@ function decrypt() {
 
   // if (cipher_text.length === 0) return;
 
-  // pt = hex2bin(cipher_text);
+  pt = hex2bin(cipher_text);
   key = hex2bin(key);
-  let pt = [];
-  for (let i = 0; i < cipher_text.length; i+=16) {
-    pt.push(cipher_text.slice(i,16));
-  }
-  let resultBin = "";
-  for (const item of pt) {
-    resultBin += decryptBlock(item,key);
-  }
+  // let pt = [];
+  // for (let i = 0; i < cipher_text.length; i+=16) {
+  //   pt.push(cipher_text.slice(i,16));
+  // }
+  // let resultBin = "";
+  // for (const item of pt) {
+  //   resultBin += decryptBlock(item,key);
+  // }
 
-  console.log(resultBin);
+  // console.log(resultBin);
 
-  bin2unicode(resultBin);
+  console.log(`Ban ma qua phep IP(64b): ${permute(pt,initial_perm,64)}`);
+  console.log(`L0: ${permute(pt,initial_perm,64).slice(0,32)}`);
+  console.log(`R0: ${permute(pt,initial_perm,64).slice(-32)}`);
+
+  console.log(encryptBlock(pt,key));
+  result = bin2hex(decryptBlock(pt,key));
 
   // result=bin2unicode(dec)
 
