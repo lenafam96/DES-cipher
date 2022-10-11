@@ -26,21 +26,74 @@ function unicode2bin(s) {
   return list;
 }
 
-function hex2bin(s) {
-  let bin = parseInt(s, 16).toString(2);
-  while (bin.length % 8) {
-    bin = "0" + bin;
+function bin2unicode(s) {
+  let list = [];
+  let str = "";
+  for (let i = 0; i < s.length; i+=8) {
+    list.push(s.substr(i,8));
   }
-  return bin;
+  for (const item of list) {
+    str+=String.fromCharCode(parseInt(item,2));
+  }
+  console.log(str);
+}
+
+function hex2bin(s) {
+  let mp = {'0': "0000",
+          '1': "0001",
+          '2': "0010",
+          '3': "0011",
+          '4': "0100",
+          '5': "0101",
+          '6': "0110",
+          '7': "0111",
+          '8': "1000",
+          '9': "1001",
+          'A': "1010",
+          'B': "1011",
+          'C': "1100",
+          'D': "1101",
+          'E': "1110",
+          'F': "1111"}
+    let bin = ""
+    for (let index = 0; index < s.length; index++) {
+      bin = bin + mp[s[index]]
+    }
+    return bin
 }
 
 function bin2hex(s) {
-  return parseInt(s, 2).toString(16);
+  let mp = {"0000": '0',
+          "0001": '1',
+          "0010": '2',
+          "0011": '3',
+          "0100": '4',
+          "0101": '5',
+          "0110": '6',
+          "0111": '7',
+          "1000": '8',
+          "1001": '9',
+          "1010": 'A',
+          "1011": 'B',
+          "1100": 'C',
+          "1101": 'D',
+          "1110": 'E',
+          "1111": 'F'}
+    let hex = ""
+    for (let i = 0; i < s.length; i+=4) {
+      let ch = ""
+        ch = ch + s[i]
+        ch = ch + s[i + 1]
+        ch = ch + s[i + 2]
+        ch = ch + s[i + 3]
+        hex = hex + mp[ch]
+    }
+    return hex
 }
 
 function dec2bin(s) {
   let bin = parseInt(s, 10).toString(2);
-  while (bin.length % 8) {
+  while (bin.length % 4) {
     bin = "0" + bin;
   }
   return bin;
@@ -55,7 +108,7 @@ function permute(k, arr, n) {
   for (let index = 0; index < n; index++) {
     permutation += k[arr[index] - 1];
   }
-  return performance;
+  return permutation;
 }
 
 function shift_left(k, nth_shifts) {
@@ -176,10 +229,11 @@ const key_comp = [
   53, 46, 42, 50, 36, 29, 32,
 ];
 
-function encryptBlock(pt, rkb, rk) {
+function encryptString(pt, rkb, rk) {
+  console.log(rkb);
   pt = permute(pt, initial_perm, 64);
 
-  let left = pt.slice(32);
+  let left = pt.slice(0,32);
   let right = pt.slice(-32);
 
   for (let i = 0; i < 16; i++) {
@@ -188,6 +242,12 @@ function encryptBlock(pt, rkb, rk) {
     let right_expanded = permute(right, exp_d, 48);
 
     let xor_x = xor(right_expanded, rkb[i]);
+
+    // console.log(`Loop ${i+1}:`)
+    // console.log(`K${i+1} = ${rkb[i]}`);
+    // console.log(`L${i+1} = R${i} = ${right_old}`);
+    // console.log(`E(R${i}) = ${right_expanded}`);
+    // console.log(`K${i+1} XOR E(R${i}) = ${xor_x}`);
 
     let sbox_str = "";
     for (let j = 0; j < 8; j++) {
@@ -202,12 +262,17 @@ function encryptBlock(pt, rkb, rk) {
       );
       let val = sbox[j][row][col];
       sbox_str += dec2bin(val);
+      // console.log(`S${j+1}[${row}][${col}] = ${val} = ${dec2bin(val)}}`);
     }
 
+    // console.log(`S-box: ${sbox_str}`);
     sbox_str = permute(sbox_str, per, 32);
 
+    // console.log(`Hoan vi P S-box = ${sbox_str}`);
     let result = xor(left, sbox_str);
     left = result;
+
+    // console.log(`R${i+1} = L${i} XOR f(R${i},K${i+1}) = ${result}`);
 
     if (i !== 15) {
       let tmp = left;
@@ -217,8 +282,80 @@ function encryptBlock(pt, rkb, rk) {
   }
 
   let combine = left + right;
+  // console.log(`R${16}L${16} = ${combine}`);
   let cipher_text = permute(combine, final_perm, 64);
+  // console.log(`Hoan vi IP-1 = ${cipher_text}`);
   return cipher_text;
+}
+
+function encryptBlock(block,key){
+  key = permute(key,keyp,56);
+  
+  // console.log(`Hoan vi 56b PC-1: ${key}`);
+  
+  let left = key.slice(0,28);
+  let right = key.slice(-28);
+  // console.log(`C0: ${left}`);
+  // console.log(`D0: ${right}`);
+  
+  let rkb = []
+  let rk = []
+
+  for (let i = 0; i < 16; i++) {
+    left = shift_left(left,shift_table[i]);
+    right = shift_left(right,shift_table[i]);
+
+    combine_str = left + right;
+
+    round_key = permute(combine_str, key_comp, 48);
+    
+    rkb.push(round_key);
+    rk.push(bin2hex(round_key));
+
+    // console.log(`C${i+1}: ${left}`);
+    // console.log(`D${i+1}: ${right}`);
+  }
+  // console.log("Khoa K1->16:");
+  // for (let i = 0; i < 16; i++) {
+  //   console.log(`K${i+1} = ${rkb[i]}`);
+  // }
+
+  return encryptString(block,rkb,rk);
+}
+
+function decryptBlock(block,key){
+  key = permute(key,keyp,56);
+  
+  // console.log(`Hoan vi 56b PC-1: ${key}`);
+  
+  let left = key.slice(0,28);
+  let right = key.slice(-28);
+  // console.log(`C0: ${left}`);
+  // console.log(`D0: ${right}`);
+  
+  let rkb = []
+  let rk = []
+
+  for (let i = 0; i < 16; i++) {
+    left = shift_left(left,shift_table[i]);
+    right = shift_left(right,shift_table[i]);
+
+    combine_str = left + right;
+
+    round_key = permute(combine_str, key_comp, 48);
+    
+    rkb.push(round_key);
+    rk.push(bin2hex(round_key));
+
+    // console.log(`C${i+1}: ${left}`);
+    // console.log(`D${i+1}: ${right}`);
+  }
+  // console.log("Khoa K1->16:");
+  // for (let i = 0; i < 16; i++) {
+  //   console.log(`K${i+1} = ${rkb[i]}`);
+  // }
+
+  return encryptString(block,rkb.reverse(),rk.reverse());
 }
 
 function checkValidKeyword(key_array) {
@@ -230,16 +367,31 @@ function encrypt() {
   let key = document.getElementById("key_encrypt").value;
   let cipher_text = document.getElementById("cipher_text");
   let result = "";
-  let key_array = key.split("").map(Number);
 
   // if (!checkValidKeyword(key_array)) {
   //   showSnakeBar();
   //   return;
   // }
 
-  if (plain_text.length === 0) return;
+  // if (plain_text.length === 0) return;
 
-  let pt = (cipher_text.innerHTML = result);
+  let pt = unicode2bin(plain_text);
+  key = hex2bin(key);
+
+  for (const item of pt) {
+    // result+=bin2hex(encryptBlock(item,key));
+    result+=(encryptBlock(item,key));
+  }
+
+
+  // console.log(`Ban ro qua phep IP(64b): ${permute(pt,initial_perm,64)}`);
+  // console.log(`L0: ${permute(pt,initial_perm,64).slice(0,32)}`);
+  // console.log(`R0: ${permute(pt,initial_perm,64).slice(-32)}`);
+
+  // console.log(encryptBlock(pt,key));
+  // result = bin2hex(encryptBlock(pt,key));
+
+  cipher_text.innerHTML = result;
   //   console.log(key_array, array);
   // createMatrixDisplay("matrixEncrypt");
 }
@@ -261,7 +413,6 @@ function decrypt() {
   let key = document.getElementById("key_decrypt").value;
   let plain_text = document.getElementById("plain_text");
   let result = "";
-  let key_array = key.split("").map(Number);
 
   // if (!checkValidKeyword(key_array)) {
   //   showSnakeBar();
@@ -270,7 +421,24 @@ function decrypt() {
 
   // if (cipher_text.length === 0) return;
 
-  // plain_text.innerHTML = result;
+  // pt = hex2bin(cipher_text);
+  key = hex2bin(key);
+  let pt = [];
+  for (let i = 0; i < cipher_text.length; i+=16) {
+    pt.push(cipher_text.slice(i,16));
+  }
+  let resultBin = "";
+  for (const item of pt) {
+    resultBin += decryptBlock(item,key);
+  }
+
+  console.log(resultBin);
+
+  bin2unicode(resultBin);
+
+  // result=bin2unicode(dec)
+
+  plain_text.innerHTML = result;
   // createMatrixDisplay("matrixDecrypt");
 }
 

@@ -12,3 +12,4 @@ def toBinary(a):
 
 print("PHANVANH")
 print(toBinary("ê"))
+print(toBinary("Ê"))

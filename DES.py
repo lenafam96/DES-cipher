@@ -343,9 +343,13 @@ print('Bước 3:')
 cipher_text = bin2hex(encrypt(pt, rkb, rk))
 print("Bản mã: ", cipher_text)
 
-# print("Decryption")
-# rkb_rev = rkb[::-1]
-# rk_rev = rk[::-1]
+print("Decryption")
+rkb_rev = rkb[::-1]
+rk_rev = rk[::-1]
+
+print(rkb)
+print(rkb_rev)
+
 # text = bin2hex(encrypt(cipher_text, rkb_rev, rk_rev))
 # print("Bản rõ : ",text)
 
