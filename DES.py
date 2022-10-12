@@ -347,6 +347,15 @@ print("Decryption")
 rkb_rev = rkb[::-1]
 rk_rev = rk[::-1]
 
+print('Áp dụng bảng hoá vị PC-2 thu được các khoá K1,K2,…K16')
+for i in range(16):
+    print("K{}: {}".format(i+1, rkb[i]))
+print('Bước 2:')
+print("Bản rõ (64b): ", hex2bin(pt))
+print("Bản rõ qua phép IP(64b): ", permute(hex2bin(cipher_text), initial_perm, 64))
+print('L0: '+permute(hex2bin(cipher_text), initial_perm, 64)[:32])
+print('R0: '+permute(hex2bin(cipher_text), initial_perm, 64)[32:])
+print('Bước 3:')
 
 text = bin2hex(encrypt(cipher_text, rkb_rev, rk_rev))
 print("Bản rõ : ",text)

@@ -11,5 +11,5 @@ def toBinary(a):
 
 
 print("PHANVANH")
-print(toBinary("ê"))
-print(toBinary("Ê"))
+print(toBinary("Ậ"))
+print(toBinary("Ạ"))

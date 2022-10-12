@@ -7,35 +7,37 @@ function inputValid(e) {
 }
 
 function unicode2bin(s) {
-  while (s.length % 8 != 0) {
+  while (s.length % 4 != 0) {
     s += " ";
   }
   list = [];
-  for (let index = 0; index < s.length; index += 8) {
+  for (let index = 0; index < s.length; index += 4) {
     let block = "";
-    for (let j = 0; j < 8; j++) {
+    for (let j = 0; j < 4; j++) {
       let bin = s.charCodeAt(index + j).toString(2);
-      while (bin.length < 8) {
+      while (bin.length < 16) {
         bin = "0" + bin;
       }
+      console.log(bin,index,j,s.charCodeAt(index + j));
       block += bin;
     }
     list.push(block);
   }
-  // console.log(list);
+  console.log(list);
   return list;
 }
 
 function bin2unicode(s) {
   let list = [];
   let str = "";
-  for (let i = 0; i < s.length; i+=8) {
-    list.push(s.substr(i,8));
+  for (let i = 0; i < s.length; i+=16) {
+    list.push(s.substr(i,16));
   }
   for (const item of list) {
+    console.log(item,parseInt(item,2),String.fromCharCode(parseInt(item,2)));
     str+=String.fromCharCode(parseInt(item,2));
   }
-  // console.log(str);
+  return str;
 }
 
 function hex2bin(s) {
@@ -355,8 +357,16 @@ function decryptBlock(block,key){
     console.log(`K${i+1} = ${rkb[i]}`);
   }
 
-  let rkb_rev = [...rkb.reverse()];
+  // let rkb_rev = [...rkb.reverse()];
   return encryptString(block,rkb.reverse(),rk.reverse());
+}
+
+function splitBlock(str){
+  let list = [];
+  for (let i = 0; i < str.length; i+=64) {
+    list.push(str.substr(i,64));
+  }
+  return list;
 }
 
 function checkValidKeyword(key_array) {
@@ -376,22 +386,22 @@ function encrypt() {
 
   // if (plain_text.length === 0) return;
 
-  let pt = hex2bin(plain_text);
+  let pt = unicode2bin(plain_text);
   key = hex2bin(key);
 
-  // for (const item of pt) {
-  //   result+=bin2hex(encryptBlock(item,key));
-  //   // result+=(encryptBlock(item,key));
-  // }
+  for (const item of pt) {
+    // result+=bin2hex(encryptBlock(item,key));
+    result+=(encryptBlock(item,key));
+  }
 
 
-  console.log(`Ban ro qua phep IP(64b): ${permute(pt,initial_perm,64)}`);
-  console.log(`L0: ${permute(pt,initial_perm,64).slice(0,32)}`);
-  console.log(`R0: ${permute(pt,initial_perm,64).slice(-32)}`);
+  // console.log(`Ban ro qua phep IP(64b): ${permute(pt,initial_perm,64)}`);
+  // console.log(`L0: ${permute(pt,initial_perm,64).slice(0,32)}`);
+  // console.log(`R0: ${permute(pt,initial_perm,64).slice(-32)}`);
 
-  console.log(encryptBlock(pt,key));
-  result = bin2hex(encryptBlock(pt,key));
-
+  // console.log(encryptBlock(pt,key));
+  // result = bin2hex(encryptBlock(pt,key));
+  // result = bin2unicode(result);
   cipher_text.innerHTML = result;
   //   console.log(key_array, array);
   // createMatrixDisplay("matrixEncrypt");
@@ -422,8 +432,9 @@ function decrypt() {
 
   // if (cipher_text.length === 0) return;
 
-  pt = hex2bin(cipher_text);
+  pt = splitBlock(cipher_text);
   key = hex2bin(key);
+  console.log(pt);
   // let pt = [];
   // for (let i = 0; i < cipher_text.length; i+=16) {
   //   pt.push(cipher_text.slice(i,16));
@@ -435,12 +446,17 @@ function decrypt() {
 
   // console.log(resultBin);
 
-  console.log(`Ban ma qua phep IP(64b): ${permute(pt,initial_perm,64)}`);
-  console.log(`L0: ${permute(pt,initial_perm,64).slice(0,32)}`);
-  console.log(`R0: ${permute(pt,initial_perm,64).slice(-32)}`);
+  // console.log(`Ban ma qua phep IP(64b): ${permute(pt,initial_perm,64)}`);
+  // console.log(`L0: ${permute(pt,initial_perm,64).slice(0,32)}`);
+  // console.log(`R0: ${permute(pt,initial_perm,64).slice(-32)}`);
 
-  console.log(encryptBlock(pt,key));
-  result = bin2hex(decryptBlock(pt,key));
+  // console.log(encryptBlock(pt,key));
+  for (const item of pt) {
+    result+=decryptBlock(item,key);
+    // result+=(encryptBlock(item,key));
+  }
+
+  result = bin2unicode(result);
 
   // result=bin2unicode(dec)
 
