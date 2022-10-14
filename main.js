@@ -14,10 +14,7 @@ function unicode2bin(s) {
   for (let index = 0; index < s.length; index += 4) {
     let block = "";
     for (let j = 0; j < 4; j++) {
-      let bin = "";
-      if(s[index+j]==="�")
-        bin = "1101111010000101";
-      else bin = s.charCodeAt(index + j).toString(2);
+      let bin = s.charCodeAt(index + j).toString(2);
       while (bin.length < 16) {
         bin = "0" + bin;
       }
@@ -39,6 +36,166 @@ function bin2unicode(s) {
   for (const item of list) {
     console.log(item,parseInt(item,2),String.fromCharCode(parseInt(item,2)));
     str+=String.fromCharCode(parseInt(item,2));
+  }
+  return str;
+}
+
+function base64toBin(s){
+  // while (s.length % 8 != 0) {
+  //   s += " ";
+  // }
+  let mp = {'A':"000000",
+  'B':"000001",
+  'C':"000010",
+  'D':"000011",
+  'E':"000100",
+  'F':"000101",
+  'G':"000110",
+  'H':"000111",
+  'I':"001000",
+  'J':"001001",
+  'K':"001010",
+  'L':"001011",
+  'M':"001100",
+  'N':"001101",
+  'O':"001110",
+  'P':"001111",
+  'Q':"010000",
+  'R':"010001",
+  'S':"010010",
+  'T':"010011",
+  'U':"010100",
+  'V':"010101",
+  'W':"010110",
+  'X':"010111",
+  'Y':"011000",
+  'Z':"011001",
+  'a':"011010",
+  'b':"011011",
+  'c':"011100",
+  'd':"011101",
+  'e':"011110",
+  'f':"011111",
+  'g':"100000",
+  'h':"100001",
+  'i':"100010",
+  'j':"100011",
+  'k':"100100",
+  'l':"100101",
+  'm':"100110",
+  'n':"100111",
+  'o':"101000",
+  'p':"101001",
+  'q':"101010",
+  'r':"101011",
+  's':"101100",
+  't':"101101",
+  'u':"101110",
+  'v':"101111",
+  'w':"110000",
+  'x':"110001",
+  'y':"110010",
+  'z':"110011",
+  '0':"110100",
+  '1':"110101",
+  '2':"110110",
+  '3':"110111",
+  '4':"111000",
+  '5':"111001",
+  '6':"111010",
+  '7':"111011",
+  '8':"111100",
+  '9':"111101",
+  '+':"111110",
+  '/':"111111"};
+  list = [];
+  let block = "";
+  for (const item of s) {
+    block += mp[item];
+  }
+  while (block.length%64!=0) {
+    block = block.slice(0,block.length-1);
+  }
+  for (let index = 0; index < block.length; index+=64) {
+    list.push(block.substr(index,64));
+  }
+  console.log(list);
+  return list;
+}
+
+function bin2base64(s) {
+  let mp = {"000000": 'A',
+  "000001": 'B',
+  "000010": 'C',
+  "000011": 'D',
+  "000100": 'E',
+  "000101": 'F',
+  "000110": 'G',
+  "000111": 'H',
+  "001000": 'I',
+  "001001": 'J',
+  "001010": 'K',
+  "001011": 'L',
+  "001100": 'M',
+  "001101": 'N',
+  "001110": 'O',
+  "001111": 'P',
+  "010000": 'Q',
+  "010001": 'R',
+  "010010": 'S',
+  "010011": 'T',
+  "010100": 'U',
+  "010101": 'V',
+  "010110": 'W',
+  "010111": 'X',
+  "011000": 'Y',
+  "011001": 'Z',
+  "011010": 'a',
+  "011011": 'b',
+  "011100": 'c',
+  "011101": 'd',
+  "011110": 'e',
+  "011111": 'f',
+  "100000": 'g',
+  "100001": 'h',
+  "100010": 'i',
+  "100011": 'j',
+  "100100": 'k',
+  "100101": 'l',
+  "100110": 'm',
+  "100111": 'n',
+  "101000": 'o',
+  "101001": 'p',
+  "101010": 'q',
+  "101011": 'r',
+  "101100": 's',
+  "101101": 't',
+  "101110": 'u',
+  "101111": 'v',
+  "110000": 'w',
+  "110001": 'x',
+  "110010": 'y',
+  "110011": 'z',
+  "110100": '0',
+  "110101": '1',
+  "110110": '2',
+  "110111": '3',
+  "111000": '4',
+  "111001": '5',
+  "111010": '6',
+  "111011": '7',
+  "111100": '8',
+  "111101": '9',
+  "111110": '+',
+  "111111": '/'};
+  let step = 6;
+  let list = [];
+  let str = "";
+  for (let i = 0; i < s.length; i+=step) {
+    list.push(s.substr(i,step));
+  }
+  for (const item of list) {
+    str+=mp[item];
   }
   return str;
 }
@@ -410,7 +567,7 @@ function encryptUnicode2Hex(plain_text,key){
   return result;
 }
 
-function encryptUnicode2Unicode(plain_text,key){
+function encryptUnicode2Ascii(plain_text,key){
   let result = "";
   let pt = unicode2bin(plain_text);
   key = hex2bin(key);
@@ -419,7 +576,10 @@ function encryptUnicode2Unicode(plain_text,key){
     // result+=bin2hex(encryptBlock(item,key));
     result+=(encryptBlock(item,key));
   }
-  return bin2unicode(result);
+  while (result.length%6!=0) {
+    result+="0";
+  }
+  return bin2base64(result);
 }
 
 function decryptBin2Unicode(cipher_text,key){
@@ -483,9 +643,9 @@ function decryptHex2Unicode(cipher_text,key){
   return bin2unicode(result);
 }
 
-function decryptUnicode2Unicode(cipher_text,key){
+function decryptAscii2Unicode(cipher_text,key){
   let result = "";
-  let pt = unicode2bin(cipher_text);
+  let pt = base64toBin(cipher_text);
   console.log(pt);
   key = hex2bin(key);
   // console.log(pt);
@@ -526,7 +686,7 @@ function encrypt() {
 
   // if (plain_text.length === 0) return;
 
-  result = encryptUnicode2Unicode(plain_text,key);
+  result = encryptUnicode2Ascii(plain_text,key);
 
 
   // console.log(`Ban ro qua phep IP(64b): ${permute(pt,initial_perm,64)}`);
@@ -566,7 +726,7 @@ function decrypt() {
 
   // if (cipher_text.length === 0) return;
 
-  result = decryptUnicode2Unicode(cipher_text,key);
+  result = decryptAscii2Unicode(cipher_text,key);
 
   // result=bin2unicode(dec)
 
