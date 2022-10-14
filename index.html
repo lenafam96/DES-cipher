@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-16" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <!-- Latest compiled and minified CSS -->
@@ -38,6 +38,7 @@
               <td>Key</td>
               <td>
                 <input type="text" id="key_encrypt" onkeypress="pressEnterEncrypt(event, true)" />
+                <button class="btn-generate-key" onclick="generateKey()">Generate key</button>
                 <div class="file">
                   <label for="file"><img src="./doc.ico" alt="" /></label>
                   <input id="file" type="file" hidden="true" onchange="changeHandlerEncrypt(event) " />
@@ -80,6 +81,7 @@
               <td>Key</td>
               <td>
                 <input type="text" id="key_decrypt" onkeypress="pressEnterEncrypt(event, true)" />
+                <button class="btn-generate-key" onclick="generateKey(false)">Generate key</button>
                 <div class="file">
                   <label for="file"><img src="./doc.ico" alt="" /></label>
                   <input type="file" hidden="true" onchange="changeHandlerDecrypt(event)" />
