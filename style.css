@@ -1,6 +1,7 @@
 * {
   padding: 0;
   margin: 0;
+  box-sizing: border-box;
 }
 
 input[type="number"]::-webkit-outer-spin-button,
@@ -26,8 +27,8 @@ table {
 td.button {
   text-align: center;
 }
-
-p#cipher_text {
+p.card-text-pl,
+p.card-text {
   font-size: xx-large;
 }
 
@@ -132,13 +133,14 @@ textarea {
 .file {
   float: right;
 }
-
-textarea {
+textarea.input-decrypt,
+textarea.input-encrypt {
   padding: 10px 20px;
   border-radius: 10px;
   margin-bottom: 20px;
   outline: none;
   border: 1px solid #ccc;
+  height: 100px;
 }
 input {
   outline: none;
@@ -151,16 +153,23 @@ input {
   border-radius: 10px;
   border: 1px solid #ccc;
 }
-
+.card-body {
+  min-height: 150px;
+}
 .Encrypt {
   flex: 1;
+  margin-top: 50px;
 }
 .Decrypt {
   flex: 1;
+  margin-top: 50px;
 }
 
 label {
   cursor: pointer;
+}
+.card-title {
+  margin-bottom: 20px;
 }
 
 #plain_text,
@@ -195,4 +204,138 @@ th {
 .table-encrypt > tr > td.th {
   color: white;
   background-color: brown;
+}
+
+.tabs {
+  position: absolute;
+  left: 10px;
+  top: -39px;
+  display: flex;
+  border: 1px solid #ccc;
+  width: max-content;
+}
+.relay {
+  position: relative;
+}
+.tabs .tab-item:not(:first-child) {
+  border-left: 1px solid #6a5af9;
+}
+
+.tabs .tab-item.active {
+  color: white;
+  background-color: #6a5af9;
+}
+
+.tabs .tab-item {
+  white-space: nowrap;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #6a5af9;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: red;
+}
+
+.tabs-result {
+  /* position: absolute;
+  left: 10px;
+  top: -39px; */
+  margin-bottom: 20px;
+  display: flex;
+  border: 1px solid #ccc;
+  width: max-content;
+}
+.tabs-result .tab-item-result:not(:first-child) {
+  border-left: 1px solid #6a5af9;
+}
+
+.tabs-result .tab-item-result.active {
+  color: white;
+  background-color: #6a5af9;
+}
+
+.tabs-result .tab-item-result {
+  white-space: nowrap;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #6a5af9;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.relay-de {
+  position: relative;
+}
+.tabs-decrypt {
+  position: absolute;
+  right: 10px;
+  top: -39px;
+  display: flex;
+  border: 1px solid #ccc;
+  width: max-content;
+}
+.tabs-decrypt .tab-item-dec:not(:first-child) {
+  border-left: 1px solid #6a5af9;
+}
+
+.tabs-decrypt .tab-item-dec.active {
+  color: white;
+  background-color: #6a5af9;
+}
+
+.tabs-decrypt .tab-item-dec {
+  white-space: nowrap;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #6a5af9;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tabs-result-pl {
+  /* position: absolute;
+  left: 10px;
+  top: -39px; */
+  margin-bottom: 20px;
+  display: flex;
+  border: 1px solid #ccc;
+  width: max-content;
+}
+.tabs-result-pl .tab-item-result-pl:not(:first-child) {
+  border-left: 1px solid #6a5af9;
+}
+
+.tabs-result-pl .tab-item-result-pl.active {
+  color: white;
+  background-color: #6a5af9;
+}
+
+.tabs-result-pl .tab-item-result-pl {
+  white-space: nowrap;
+  padding: 10px 15px;
+  cursor: pointer;
+  color: #6a5af9;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-generate-key {
+  padding: 10px;
+  margin-left: 20px;
+  border: none;
+  color: white;
+  background-color: teal;
+  border-radius: 7px;
+  cursor: pointer;
+}
+.btn-generate-key:hover {
+  background-color: darkred;
 }
