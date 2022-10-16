@@ -22,26 +22,6 @@
   </head>
 
   <body>
-    <!-- <div class="tabs">
-      <div
-        class="tab-item active"
-        onclick="openInputEncrypt(event,'input_plain_text')"
-      >
-        Text (unicode)
-      </div>
-      <div
-        class="tab-item"
-        onclick="openInputEncrypt(event,'input_plain_text_binary')"
-      >
-        Binary
-      </div>
-      <div
-        class="tab-item"
-        onclick="openInputEncrypt(event,'input_plain_text_hex')"
-      >
-        Hex
-      </div>
-    </div> -->
     <div class="container">
       <div class="Encrypt">
         <div class="card input-plain-text">
@@ -101,6 +81,7 @@
                 <td>Key</td>
                 <td>
                   <input
+                    style="width: 400px"
                     type="text"
                     id="key_encrypt"
                     onkeypress="pressEnterEncrypt(event, true)"
@@ -187,7 +168,7 @@
                       class="tab-item-dec active"
                       onclick="openInputEncrypt(event,'input_cipher_text','input-decrypt','tab-item-dec')"
                     >
-                      Text (unicode)
+                      Base64
                     </div>
                     <div
                       class="tab-item-dec"
@@ -205,7 +186,7 @@
                   <textarea
                     class="input-decrypt"
                     id="input_cipher_text"
-                    placeholder="Input text (unicode)... "
+                    placeholder="Input Base64... "
                     cols="80"
                     rows="5"
                   ></textarea>
@@ -233,6 +214,7 @@
                 <td>Key</td>
                 <td>
                   <input
+                    style="width: 400px"
                     type="text"
                     id="key_decrypt"
                     onkeypress="pressEnterEncrypt(event, true)"
@@ -282,7 +264,7 @@
                 class="tab-item-result-pl active"
                 onclick="resultInputEncrypt(event,'plain_text-pl','card-text-pl','tab-item-result-pl')"
               >
-                Base64
+                Text (unicode)
               </div>
               <div
                 class="tab-item-result-pl"
@@ -298,7 +280,7 @@
               </div>
             </div>
 
-            <p class="card-text-pl" id="plain_text-pl">Result Base64</p>
+            <p class="card-text-pl" id="plain_text-pl">Result Unicode</p>
             <p
               class="card-text-pl"
               id="plain_text_binary-pl"
