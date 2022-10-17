@@ -1,3 +1,10 @@
+let inputPlainTextMode=1; //1-text; 2-binary; 3-heximal
+let inputCipherTextMode=1; //1-text; 2-binary; 3-heximal
+let outputPlainTextMode=1; //1-base64; 2-binary; 3-heximal
+let outputCipherTextMode=1; //1-base64; 2-binary; 3-heximal
+
+//----------------------------------------------------------------//
+
 const openInputEncrypt = (evt, input, className, div) => {
   let inputEle = document.getElementsByClassName(className);
   for (let i = 0; i < inputEle.length; i++) {
@@ -11,6 +18,25 @@ const openInputEncrypt = (evt, input, className, div) => {
   }
   document.getElementById(input).style.display = "block";
   evt.currentTarget.className += " active";
+  if(input.includes("binary")){
+    if(input.includes("plain_text"))
+      inputPlainTextMode = 2;
+    else inputCipherTextMode = 2;
+  }
+  else if(input.includes("hex")){
+    if(input.includes("plain_text"))
+      inputPlainTextMode = 3;
+    else inputCipherTextMode = 3;
+  }
+  else{
+    if(input.includes("plain_text"))
+      inputPlainTextMode = 1;
+    else inputCipherTextMode = 1;
+  }
+  if(className.includes("input-encrypt"))
+    encrypt();
+  else
+    decrypt();
 };
 
 const resultInputEncrypt = (evt, p, className, div) => {
@@ -24,14 +50,47 @@ const resultInputEncrypt = (evt, p, className, div) => {
   }
   document.getElementById(p).style.display = "block";
   evt.currentTarget.className += " active";
+  if(p.includes("binary")){
+    if(p.includes("plain_text"))
+      outputPlainTextMode = 2;
+    else outputCipherTextMode = 2;
+  }
+  else if(p.includes("hex")){
+    if(p.includes("plain_text"))
+      outputPlainTextMode = 3;
+    else outputCipherTextMode = 3;
+  }
+  else{
+    if(p.includes("plain_text"))
+      outputPlainTextMode = 1;
+    else outputCipherTextMode = 1;
+  }
+  if(p.includes("plain_text"))
+    decrypt();
+  else
+    encrypt();
 };
 
 //----------------------------------------------------------------//
 
 let array;
-function inputValid(e) {
-  let invalidChars = ["-", "+", "e", "E", "0"];
-  if (invalidChars.includes(e.key)) {
+function inputValidBin(e) {
+  let invalidChars = ["0","1"];
+  if (!invalidChars.includes(e.key)) {
+    e.preventDefault();
+  }
+}
+
+function inputValidHex(e) {
+  let invalidChars = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+  if (!invalidChars.includes(e.key)) {
+    e.preventDefault();
+  }
+}
+
+function inputValidBase64(e) {
+  let invalidChars = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","/"];
+  if (!invalidChars.includes(e.key)) {
     e.preventDefault();
   }
 }
@@ -79,68 +138,68 @@ function base64toBin(s) {
   //   s += " ";
   // }
   let mp = {
-    A: "000000",
-    B: "000001",
-    C: "000010",
-    D: "000011",
-    E: "000100",
-    F: "000101",
-    G: "000110",
-    H: "000111",
-    I: "001000",
-    J: "001001",
-    K: "001010",
-    L: "001011",
-    M: "001100",
-    N: "001101",
-    O: "001110",
-    P: "001111",
-    Q: "010000",
-    R: "010001",
-    S: "010010",
-    T: "010011",
-    U: "010100",
-    V: "010101",
-    W: "010110",
-    X: "010111",
-    Y: "011000",
-    Z: "011001",
-    a: "011010",
-    b: "011011",
-    c: "011100",
-    d: "011101",
-    e: "011110",
-    f: "011111",
-    g: "100000",
-    h: "100001",
-    i: "100010",
-    j: "100011",
-    k: "100100",
-    l: "100101",
-    m: "100110",
-    n: "100111",
-    o: "101000",
-    p: "101001",
-    q: "101010",
-    r: "101011",
-    s: "101100",
-    t: "101101",
-    u: "101110",
-    v: "101111",
-    w: "110000",
-    x: "110001",
-    y: "110010",
-    z: "110011",
-    0: "110100",
-    1: "110101",
-    2: "110110",
-    3: "110111",
-    4: "111000",
-    5: "111001",
-    6: "111010",
-    7: "111011",
-    8: "111100",
-    9: "111101",
+    "A": "000000",
+    "B": "000001",
+    "C": "000010",
+    "D": "000011",
+    "E": "000100",
+    "F": "000101",
+    "G": "000110",
+    "H": "000111",
+    "I": "001000",
+    "J": "001001",
+    "K": "001010",
+    "L": "001011",
+    "M": "001100",
+    "N": "001101",
+    "O": "001110",
+    "P": "001111",
+    "Q": "010000",
+    "R": "010001",
+    "S": "010010",
+    "T": "010011",
+    "U": "010100",
+    "V": "010101",
+    "W": "010110",
+    "X": "010111",
+    "Y": "011000",
+    "Z": "011001",
+    "a": "011010",
+    "b": "011011",
+    "c": "011100",
+    "d": "011101",
+    "e": "011110",
+    "f": "011111",
+    "g": "100000",
+    "h": "100001",
+    "i": "100010",
+    "j": "100011",
+    "k": "100100",
+    "l": "100101",
+    "m": "100110",
+    "n": "100111",
+    "o": "101000",
+    "p": "101001",
+    "q": "101010",
+    "r": "101011",
+    "s": "101100",
+    "t": "101101",
+    "u": "101110",
+    "v": "101111",
+    "w": "110000",
+    "x": "110001",
+    "y": "110010",
+    "z": "110011",
+    "0": "110100",
+    "1": "110101",
+    "2": "110110",
+    "3": "110111",
+    "4": "111000",
+    "5": "111001",
+    "6": "111010",
+    "7": "111011",
+    "8": "111100",
+    "9": "111101",
     "+": "111110",
     "/": "111111",
   };
@@ -193,38 +252,38 @@ function bin2base64(s) {
     "011101": "d",
     "011110": "e",
     "011111": "f",
-    100000: "g",
-    100001: "h",
-    100010: "i",
-    100011: "j",
-    100100: "k",
-    100101: "l",
-    100110: "m",
-    100111: "n",
-    101000: "o",
-    101001: "p",
-    101010: "q",
-    101011: "r",
-    101100: "s",
-    101101: "t",
-    101110: "u",
-    101111: "v",
-    110000: "w",
-    110001: "x",
-    110010: "y",
-    110011: "z",
-    110100: "0",
-    110101: "1",
-    110110: "2",
-    110111: "3",
-    111000: "4",
-    111001: "5",
-    111010: "6",
-    111011: "7",
-    111100: "8",
-    111101: "9",
-    111110: "+",
-    111111: "/",
+    "100000": "g",
+    "100001": "h",
+    "100010": "i",
+    "100011": "j",
+    "100100": "k",
+    "100101": "l",
+    "100110": "m",
+    "100111": "n",
+    "101000": "o",
+    "101001": "p",
+    "101010": "q",
+    "101011": "r",
+    "101100": "s",
+    "101101": "t",
+    "101110": "u",
+    "101111": "v",
+    "110000": "w",
+    "110001": "x",
+    "110010": "y",
+    "110011": "z",
+    "110100": "0",
+    "110101": "1",
+    "110110": "2",
+    "110111": "3",
+    "111000": "4",
+    "111001": "5",
+    "111010": "6",
+    "111011": "7",
+    "111100": "8",
+    "111101": "9",
+    "111110": "+",
+    "111111": "/",
   };
   let step = 6;
   let list = [];
@@ -240,22 +299,22 @@ function bin2base64(s) {
 
 function hex2bin(s) {
   let mp = {
-    0: "0000",
-    1: "0001",
-    2: "0010",
-    3: "0011",
-    4: "0100",
-    5: "0101",
-    6: "0110",
-    7: "0111",
-    8: "1000",
-    9: "1001",
-    A: "1010",
-    B: "1011",
-    C: "1100",
-    D: "1101",
-    E: "1110",
-    F: "1111",
+    "0": "0000",
+    "1": "0001",
+    "2": "0010",
+    "3": "0011",
+    "4": "0100",
+    "5": "0101",
+    "6": "0110",
+    "7": "0111",
+    "8": "1000",
+    "9": "1001",
+    "A": "1010",
+    "B": "1011",
+    "C": "1100",
+    "D": "1101",
+    "E": "1110",
+    "F": "1111",
   };
   let bin = "";
   for (let index = 0; index < s.length; index++) {
@@ -274,14 +333,14 @@ function bin2hex(s) {
     "0101": "5",
     "0110": "6",
     "0111": "7",
-    1000: "8",
-    1001: "9",
-    1010: "A",
-    1011: "B",
-    1100: "C",
-    1101: "D",
-    1110: "E",
-    1111: "F",
+    "1000": "8",
+    "1001": "9",
+    "1010": "A",
+    "1011": "B",
+    "1100": "C",
+    "1101": "D",
+    "1110": "E",
+    "1111": "F",
   };
   let hex = "";
   for (let i = 0; i < s.length; i += 4) {
@@ -571,7 +630,55 @@ function splitBlock(str, blockSize) {
   return list;
 }
 
-function checkValidKeyword(key_array) {
+function checkValidKeyword(key) {
+  let invalidChars = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+  for (const item of key) {
+    if(!invalidChars.includes(item))
+      return false;
+  }
+  return true;
+}
+
+function checkValidInputEncrypt(plain_text) {
+  if(inputPlainTextMode === 2){
+    let invalidChars = ["0","1"];
+    for (const item of plain_text) {
+      if(!invalidChars.includes(item))
+        return false;
+    }
+  }
+  if(inputPlainTextMode === 3){
+    let invalidChars = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+    for (const item of plain_text) {
+      if(!invalidChars.includes(item))
+        return false;
+    }
+  }
+  return true;
+}
+
+function checkValidInputDecrypt(plain_text) {
+  if(inputPlainTextMode === 1){
+    let invalidChars = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","/"];
+    for (const item of plain_text) {
+      if(!invalidChars.includes(item))
+        return false;
+    }
+  }
+  if(inputPlainTextMode === 2){
+    let invalidChars = ["0","1"];
+    for (const item of plain_text) {
+      if(!invalidChars.includes(item))
+        return false;
+    }
+  }
+  if(inputPlainTextMode === 3){
+    let invalidChars = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+    for (const item of plain_text) {
+      if(!invalidChars.includes(item))
+        return false;
+    }
+  }
   return true;
 }
 
@@ -602,9 +709,9 @@ function generateKey(flag = true) {
   key.value = str;
 }
 
-function encryptUnicode2Bin(plain_text, key) {
+function encryp2Bin(plain_text, key) {
   let result = "";
-  let pt = unicode2bin(plain_text);
+  let pt = plainText2bin(plain_text);
   key = hex2bin(key);
 
   for (const item of pt) {
@@ -614,9 +721,9 @@ function encryptUnicode2Bin(plain_text, key) {
   return result;
 }
 
-function encryptUnicode2Hex(plain_text, key) {
+function encryp2Hex(plain_text, key) {
   let result = "";
-  let pt = unicode2bin(plain_text);
+  let pt = plainText2bin(plain_text);
   key = hex2bin(key);
 
   for (const item of pt) {
@@ -626,9 +733,9 @@ function encryptUnicode2Hex(plain_text, key) {
   return result;
 }
 
-function encryptUnicode2Ascii(plain_text, key) {
+function encryp2Base64(plain_text, key) {
   let result = "";
-  let pt = unicode2bin(plain_text);
+  let pt = plainText2bin(plain_text);
   key = hex2bin(key);
 
   for (const item of pt) {
@@ -641,7 +748,20 @@ function encryptUnicode2Ascii(plain_text, key) {
   return bin2base64(result);
 }
 
-function decryptBin2Unicode(cipher_text, key) {
+function plainText2bin(plain_text){
+  switch (inputPlainTextMode) {
+    case 1:
+      return unicode2bin(plain_text);
+  
+    case 2:
+      return plain_text;
+
+    case 3:
+      return hex2bin(plain_text);
+  }
+}
+
+function decryptBin(cipher_text, key) {
   const blockSize = 64;
   let result = "";
   let pt = splitBlock(cipher_text, blockSize);
@@ -668,10 +788,10 @@ function decryptBin2Unicode(cipher_text, key) {
     // result+=(encryptBlock(item,key));
   }
 
-  return bin2unicode(result);
+  return bin2(result);
 }
 
-function decryptHex2Unicode(cipher_text, key) {
+function decryptHex(cipher_text, key) {
   const blockSize = 16;
   let result = "";
   let pt = splitBlock(cipher_text, blockSize);
@@ -699,10 +819,10 @@ function decryptHex2Unicode(cipher_text, key) {
     // result+=(encryptBlock(item,key));
   }
 
-  return bin2unicode(result);
+  return bin2(result);
 }
 
-function decryptAscii2Unicode(cipher_text, key) {
+function decryptBase64(cipher_text, key) {
   let result = "";
   let pt = base64toBin(cipher_text);
   console.log(pt);
@@ -729,23 +849,51 @@ function decryptAscii2Unicode(cipher_text, key) {
     // result+=(encryptBlock(item,key));
   }
 
-  return bin2unicode(result);
+  return bin2(result);
+}
+
+function bin2(result){
+  switch (outputPlainTextMode) {
+    case 1:
+      return bin2unicode(result);
+  
+    case 2:
+      return result;
+
+    case 3:
+      return bin2hex(result);
+  }
 }
 
 function encrypt() {
-  let plain_text = document.getElementById("input_plain_text").value;
-  let key = document.getElementById("key_encrypt").value;
-  let cipher_text = document.getElementById("cipher_text");
+  let plain_text = document.getElementById("input_plain_text"+(inputPlainTextMode==2?"_binary":(inputPlainTextMode==3?"_hex":""))).value.trim();
+  let key = document.getElementById("key_encrypt").value.trim();
+  let cipher_text = document.getElementById("cipher_text"+(outputCipherTextMode==2?"_binary":(outputCipherTextMode==3?"_hex":"")));
   let result = "";
 
-  // if (!checkValidKeyword(key_array)) {
-  //   showSnakeBar();
-  //   return;
-  // }
+  if (plain_text.length === 0 || key.length === 0) return;
+  
+  if (!checkValidInputEncrypt(plain_text)) {
+    showSnakeBar("Plain Text Invalid!");
+    return;
+  }
 
-  // if (plain_text.length === 0) return;
-
-  result = encryptUnicode2Ascii(plain_text, key);
+  if (!checkValidKeyword(key)) {
+    showSnakeBar("Keyword Invalid!");
+    return;
+  }
+  
+  switch (outputCipherTextMode) {
+    case 1:
+      result = encryp2Base64(plain_text, key);
+      break;
+    case 2:
+      result = encryp2Bin(plain_text, key);
+      break;
+    case 3:
+      result = encryp2Hex(plain_text, key);
+      break;
+  }
 
   // console.log(`Ban ro qua phep IP(64b): ${permute(pt,initial_perm,64)}`);
   // console.log(`L0: ${permute(pt,initial_perm,64).slice(0,32)}`);
@@ -760,7 +908,7 @@ function encrypt() {
 }
 
 const pressEnterEncrypt = (e, flag) => {
-  inputValid(e);
+  inputValidHex(e);
   if (e.key === "Enter") {
     flag ? encrypt() : decrypt();
   }
@@ -772,19 +920,42 @@ const saveFileEncrypt = () => {
 };
 
 function decrypt() {
-  let cipher_text = document.getElementById("input_cipher_text").value;
-  let key = document.getElementById("key_decrypt").value;
-  let plain_text = document.getElementById("plain_text");
+  let cipher_text = document.getElementById("input_cipher_text"+(inputCipherTextMode==2?"_binary":(inputCipherTextMode==3?"_hex":""))).value.trim();
+  let key = document.getElementById("key_decrypt").value.trim();
+  let plain_text = document.getElementById("plain_text"+(outputPlainTextMode==2?"_binary":(outputPlainTextMode==3?"_hex":""))+"-pl");
   let result = "";
 
-  // if (!checkValidKeyword(key_array)) {
-  //   showSnakeBar();
-  //   return;
-  // }
+  if (cipher_text.length === 0 || key.length === 0) return;
 
-  // if (cipher_text.length === 0) return;
+  if (!checkValidInputDecrypt(cipher_text)) {
+    showSnakeBar("Cipher Text Invalid!");
+    return;
+  }
 
-  result = decryptAscii2Unicode(cipher_text, key);
+  if (!checkValidKeyword(key)) {
+    showSnakeBar("Keyword Invalid!");
+    return;
+  }
+
+  switch (inputCipherTextMode) {
+    case 1:
+      result = decryptBase64(cipher_text, key);
+      break;
+    case 2:
+      result = decryptBin(cipher_text, key);
+      break;
+    case 3:
+      result = decryptHex(cipher_text, key);
+      break;
+  }
+  
+  while(result.includes(" ")){
+    result = result.replace(" ","&nbsp;");
+  }
+
+  while(result.includes("\n")){
+    result = result.replace("\n","<br>");
+  }
 
   // result=bin2unicode(dec)
 
@@ -792,9 +963,10 @@ function decrypt() {
   // createMatrixDisplay("matrixDecrypt");
 }
 
-function showSnakeBar() {
+function showSnakeBar(message) {
   var x = document.getElementById("snackbar");
   x.className = "show";
+  x.innerHTML = message;
   setTimeout(function () {
     x.className = x.className.replace("show", "");
   }, 3000);
