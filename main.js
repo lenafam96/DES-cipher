@@ -130,6 +130,7 @@ function bin2unicode(s) {
     );
     str += String.fromCharCode(parseInt(item, 2));
   }
+
   return str;
 }
 
@@ -214,6 +215,7 @@ function base64toBin(s) {
   for (let index = 0; index < block.length; index += 64) {
     list.push(block.substr(index, 64));
   }
+
   console.log(list);
   return list;
 }
@@ -672,7 +674,7 @@ function checkValidInputDecrypt(plain_text) {
     let invalidChars = ["0","1"];
     for (const item of plain_text) {
       if(!invalidChars.includes(item))
-        return false;
+        return false;``
     }
   }
   if(inputCipherTextMode === 3){
@@ -945,7 +947,7 @@ function decrypt() {
     showSnakeBar("Keyword Invalid!");
     return;
   }
-
+  
   switch (inputCipherTextMode) {
     case 1:
       result = decryptBase64(cipher_text, key);
@@ -957,13 +959,17 @@ function decrypt() {
       result = decryptHex(cipher_text, key);
       break;
   }
-  
+
   while(result.includes(" ")){
     result = result.replace(" ","&nbsp;");
   }
 
   while(result.includes("\n")){
     result = result.replace("\n","<br>");
+  }
+
+  while(result.includes("<")){
+    result = result.replace("<","&lt;");
   }
 
   // result=bin2unicode(dec)
