@@ -961,7 +961,7 @@ function decrypt() {
   }
 
   while(result.includes("  ")){
-    result = result.replace("  "," &nbsp;");
+    result = result.replace("  ","&nbsp; ");
   }
   
   while(result.includes("<")){
