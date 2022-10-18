@@ -963,15 +963,15 @@ function decrypt() {
   while(result.includes(" ")){
     result = result.replace(" ","&nbsp;");
   }
-
-  while(result.includes("\n")){
-    result = result.replace("\n","<br>");
-  }
-
+  
   while(result.includes("<")){
     result = result.replace("<","&lt;");
   }
-
+  
+  while(result.includes("\n")){
+    result = result.replace("\n","<br>");
+  }
+  
   // result=bin2unicode(dec)
 
   plain_text.innerHTML = result;
