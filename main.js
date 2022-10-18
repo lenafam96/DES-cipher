@@ -82,7 +82,7 @@ function inputValidBin(e) {
 }
 
 function inputValidHex(e) {
-  let invalidChars = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
+  let invalidChars = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","a","b","c","d","e","f"];
   if (!invalidChars.includes(e.key)) {
     e.preventDefault();
   }
@@ -641,6 +641,7 @@ function checkValidKeyword(key) {
 
 function checkValidInputEncrypt(plain_text) {
   if(inputPlainTextMode === 2){
+    if(plain_text.length%64!=0) return false;
     let invalidChars = ["0","1"];
     for (const item of plain_text) {
       if(!invalidChars.includes(item))
@@ -658,21 +659,24 @@ function checkValidInputEncrypt(plain_text) {
 }
 
 function checkValidInputDecrypt(plain_text) {
-  if(inputPlainTextMode === 1){
+  if(inputCipherTextMode === 1){
+    // if(plain_text.length%11!=0) return false;
     let invalidChars = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","0","1","2","3","4","5","6","7","8","9","+","/"];
     for (const item of plain_text) {
       if(!invalidChars.includes(item))
         return false;
     }
   }
-  if(inputPlainTextMode === 2){
+  if(inputCipherTextMode === 2){
+    // if(plain_text.length%64!=0) return false;
     let invalidChars = ["0","1"];
     for (const item of plain_text) {
       if(!invalidChars.includes(item))
         return false;
     }
   }
-  if(inputPlainTextMode === 3){
+  if(inputCipherTextMode === 3){
+    // if(plain_text.length%16!=0) return false;
     let invalidChars = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F"];
     for (const item of plain_text) {
       if(!invalidChars.includes(item))
@@ -754,7 +758,12 @@ function plainText2bin(plain_text){
       return unicode2bin(plain_text);
   
     case 2:
-      return plain_text;
+      let blockSize = 64;
+      let list = [];
+      for (let i = 0; i < plain_text.length; i+=blockSize) {
+        list.push(plain_text.substr(i,blockSize));
+      }
+      return list;
 
     case 3:
       return hex2bin(plain_text);
@@ -908,7 +917,7 @@ function encrypt() {
 }
 
 const pressEnterEncrypt = (e, flag) => {
-  inputValidHex(e);
+  // inputValidHex(e);
   if (e.key === "Enter") {
     flag ? encrypt() : decrypt();
   }
