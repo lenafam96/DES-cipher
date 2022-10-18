@@ -960,8 +960,8 @@ function decrypt() {
       break;
   }
 
-  while(result.includes(" ")){
-    result = result.replace(" ","&nbsp;");
+  while(result.includes("  ")){
+    result = result.replace("  "," &nbsp;");
   }
   
   while(result.includes("<")){
